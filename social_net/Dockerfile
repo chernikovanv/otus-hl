@@ -1,7 +1,7 @@
 FROM python:3.6.1-alpine
-RUN apk update
-RUN mkdir /usr/src/app
-WORKDIR /usr/src/app
-COPY ./requirements.txt .
+RUN mkdir /usr/src/app/
+COPY . /usr/src/app/
+WORKDIR /usr/src/app/
+EXPOSE 5000
 RUN pip install -r requirements.txt
-COPY . .
+CMD ["python", "api.py"]
