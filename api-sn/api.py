@@ -29,7 +29,7 @@ class DBManager:
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
         self.cursor.execute(CREATE_TABLE_USERS)
-        self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
+        #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
     
     def query_users(self):
