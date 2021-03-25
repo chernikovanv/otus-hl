@@ -40,8 +40,7 @@ class DBManager:
     
 app = Flask(__name__)
 
-db_conn = DBManager()
-db_conn.init_db()
+db_conn = None
 
 @app.route('/')
 def welcome():
@@ -50,7 +49,9 @@ def welcome():
 @app.route('/users')
 def users():
     global db_conn
-    if not db_conn: db_conn = DBManager()
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
     rec = db_conn.query_users()
 
     response = ''
