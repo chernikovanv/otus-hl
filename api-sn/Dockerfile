@@ -4,6 +4,7 @@ COPY . /usr/src/app/
 WORKDIR /usr/src/app/
 EXPOSE 5000
 RUN apk add --no-cache gcc \
+    && apk add musl-dev \
     && pip install --upgrade pip \
     && pip install -r requirements.txt
 CMD ["python", "api.py"]
