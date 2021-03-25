@@ -9,3 +9,15 @@ services:
         environment: 
             PORT: 80
             FLASK_DEBUG: 1
+            MYSQL_DATABASE: social_net
+            MYSQL_ROOT_PASSWORD : root
+    db:
+        image: mysql:8.0.19
+        command: '--default-authentication-plugin=mysql_native_password'
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            - MYSQL_DATABASE=social_net
+            - MYSQL_ROOT_PASSWORD=root
+volumes:
+  db-data:
