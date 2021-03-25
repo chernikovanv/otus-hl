@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 import mysql.connector
 
 DB_HOST = "db"
@@ -74,6 +74,11 @@ def signup():
 @auth.route('/logout')
 def logout():
     return 'Logout'
+
+@auth.route('/signup', methods=['POST'])
+def signup_post():
+    # code to validate and add user to database goes here
+    return redirect(url_for('auth.login'))  
   
 app.register_blueprint(auth)
 app.register_blueprint(main)
