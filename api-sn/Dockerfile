@@ -3,9 +3,7 @@ RUN mkdir /usr/src/app/
 COPY . /usr/src/app/
 WORKDIR /usr/src/app/
 EXPOSE 5000
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc \
+RUN apk add --no-cache gcc \
     && pip install --upgrade pip \
-    && pip install -r requirements.txt \
-    && apt-get purge -y --auto-remove gcc and-build-dependencies
+    && pip install -r requirements.txt
 CMD ["python", "api.py"]
