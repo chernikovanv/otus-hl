@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask import Blueprint
+from flask import Blueprint, render_template
 import mysql.connector
 
 DB_HOST = "db"
@@ -55,21 +55,21 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return 'Index'
+    return render_template('index.html')
 
 @main.route('/profile')
 def profile():
-    return 'Profile'
+    return render_template('profile.html')
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
-    return 'Login'
+    return render_template('login.html')
 
 @auth.route('/signup')
 def signup():
-    return 'Signup'
+    return render_template('signup.html')
 
 @auth.route('/logout')
 def logout():
