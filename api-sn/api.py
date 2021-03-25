@@ -25,7 +25,7 @@ class DBManager:
         )
         self.cursor = self.connection.cursor()
     
-    def init_db():
+    def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
         self.cursor.execute(CREATE_TABLE_USERS)
