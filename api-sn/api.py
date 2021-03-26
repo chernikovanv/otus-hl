@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS users (
   name varchar(255) DEFAULT NULL,
   surname varchar(255) DEFAULT NULL,
   age int(8) unsigned DEFAULT NULL,
-  gender enum('m','f'),
-  city varchar(50) NOT NULL,
-  interests set('Travel','Sports','Dancing','Fine Dining'),
+  gender enum('m','f') DEFAULT NULL,
+  city varchar(50) DEFAULT NULL,
+  interests set('Travel','Sports','Dancing','Fine Dining') DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (email)
 )
