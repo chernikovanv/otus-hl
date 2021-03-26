@@ -52,7 +52,7 @@ class DBManager:
         return rec
       
     def add_user(self, email, name, password):
-        self.cursor.execute("INSERT INTO users (email, name, password) VALUES ('{}','{}','{}')".format(email,name,password))
+        self.cursor.execute("INSERT INTO users (email, password) VALUES ('{}','{}')".format(email,password))
         self.connection.commit()
      
 app = Flask(__name__)
