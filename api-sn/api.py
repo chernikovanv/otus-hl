@@ -51,6 +51,14 @@ class DBManager:
             rec.append(c[0])
         return rec
       
+    def query_user_password(self, email):
+        self.cursor.execute("SELECT password FROM users where email = '{}'".format(email))
+        password = None
+        for c in self.cursor:
+            password = c[0]
+            break
+        return password
+      
     def add_user(self, email, name, password):
         self.cursor.execute("INSERT INTO users (email, password) VALUES ('{}','{}')".format(email,password))
         self.connection.commit()
@@ -105,6 +113,28 @@ def signup_post():
     db_conn.add_user(email=email, name=name, password=generate_password_hash(password, method='sha256'))
 
     return redirect(url_for('auth.login'))
+ 
+@auth.route('/login', methods=['POST'])
+def login_post():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    remember = True if request.form.get('remember') else False
+
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    user_password = db_conn.query_user_password(email)
+
+    # check if the user actually exists
+    # take the user-supplied password, hash it, and compare it to the hashed password in the database
+    if not user_password or not check_password_hash(user_password, password):
+        flash('Please check your login details and try again.')
+        return redirect(url_for('auth.login')) # if the user doesn't exist or password is wrong, reload the page
+
+    # if the above check passes, then we know the user has the right credentials
+    return redirect(url_for('main.profile'))
   
 app.register_blueprint(auth)
 app.register_blueprint(main)
