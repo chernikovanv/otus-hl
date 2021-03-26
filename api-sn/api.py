@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify
 #from flask_sqlalchemy import SQLAlchemy
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
@@ -98,6 +98,7 @@ def signup_post():
     user = db_conn.query_user(email)
     
     if user: # if a user is found, we want to redirect back to signup page so user can try again
+        flash('Email address already exists')
         return redirect(url_for('auth.signup'))
 
     # add the new user to the database
