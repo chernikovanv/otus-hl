@@ -13,11 +13,19 @@ DB_NAME = os.getenv('MYSQL_DATABASE')
 DB_USER = "root"
 DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
 
+DROP_TABLE_USERS = '''DROP TABLE IF EXISTS users'''
+
 CREATE_TABLE_USERS = '''
 CREATE TABLE IF NOT EXISTS users (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   email varchar(255) DEFAULT NULL,
   password varchar(255) DEFAULT NULL,
+  name varchar(255) DEFAULT NULL,
+  surname varchar(255) DEFAULT NULL,
+  age int(8) unsigned DEFAULT NULL,
+  gender char(1) enum('m','f'),
+  city varchar(50) NOT NULL,
+  interests set('Travel','Sports','Dancing','Fine Dining'),
   PRIMARY KEY (id),
   UNIQUE KEY (email)
 )
@@ -42,6 +50,7 @@ class DBManager:
     def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
+        self.cursor.execute(DROP_TABLE_USERS)
         self.cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
