@@ -50,7 +50,7 @@ class DBManager:
     def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
-        self.cursor.execute(DROP_TABLE_USERS)
+        #self.cursor.execute(DROP_TABLE_USERS)
         self.cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
@@ -85,7 +85,6 @@ class DBManager:
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secret-key-goes-here"
-#app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_NAME)
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -178,23 +177,6 @@ app.register_blueprint(auth)
 app.register_blueprint(main)
 
 db_conn = None
-
-OLD = '''@app.route('/')
-def welcome():
-    return jsonify({'status': 'api working'})
-
-@app.route('/users')
-def users():
-    global db_conn
-    if not db_conn: 
-      db_conn = DBManager()
-      db_conn.init_db()
-    rec = db_conn.query_users()
-
-    response = ''
-    for c in rec:
-        response = response  + '<div>   Hello  ' + c + '</div>'
-    return response'''
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.getenv('PORT'))
