@@ -131,7 +131,7 @@ def signup_post():
     email = request.form.get('email')
     name = request.form.get('name')
     password = request.form.get('password')
-    interests = request.form.get('interests')
+    interests = request.form.getlist('interests')
   
     app.logger.info(interests)
     
