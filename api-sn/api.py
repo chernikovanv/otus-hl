@@ -2,6 +2,8 @@ import os
 from flask import Flask, jsonify
 #from flask_sqlalchemy import SQLAlchemy
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import LoginManager
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
@@ -20,6 +22,12 @@ CREATE TABLE IF NOT EXISTS users (
 )
 '''
 
+class User(UserMixin):
+    def __init__(self, id, email, password):
+        self.id = id
+        self.email = email
+        self.password = password 
+        
 class DBManager:
     def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD):
         self.connection = mysql.connector.connect(
@@ -45,11 +53,12 @@ class DBManager:
         return rec
      
     def query_user(self, email):
-        self.cursor.execute("SELECT id FROM users where email = '{}'".format(email))
-        rec = []
+        self.cursor.execute("SELECT id, email, password FROM users where email = '{}'".format(email))
+        user = None
         for c in self.cursor:
-            rec.append(c[0])
-        return rec
+            user = User(c[0],c[1],c[2])
+            break
+        return user
       
     def query_user_password(self, email):
         self.cursor.execute("SELECT password FROM users where email = '{}'".format(email))
@@ -61,13 +70,17 @@ class DBManager:
       
     def add_user(self, email, name, password):
         self.cursor.execute("INSERT INTO users (email, password) VALUES ('{}','{}')".format(email,password))
-        self.connection.commit()
-     
+        self.connection.commit()     
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secret-key-goes-here"
 #app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_NAME)
 
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+    
 main = Blueprint('main', __name__)
 
 @main.route('/')
