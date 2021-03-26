@@ -132,16 +132,8 @@ def signup_post():
     name = request.form.get('name')
     password = request.form.get('password')
     interests = request.form.get('interests')
-    
-    try:
-      app.logger.info(str(interests))
-    except:
-      pass
-    
-    try:
-      app.logger.info(interests)
-    except:
-      pass
+  
+    auth.logger.info(interests)
     
     global db_conn
     if not db_conn: 
