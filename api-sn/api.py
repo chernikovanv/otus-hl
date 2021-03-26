@@ -1,7 +1,8 @@
 import os
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask import Blueprint, render_template, redirect, url_for
+#from flask_sqlalchemy import SQLAlchemy
+from flask import Blueprint, render_template, redirect, url_for, request
+from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
 DB_HOST = "db"
@@ -42,14 +43,22 @@ class DBManager:
         for c in self.cursor:
             rec.append(c[0])
         return rec
-
-db_auth = SQLAlchemy()
+     
+    def query_user(self, email):
+        self.cursor.execute("SELECT id FROM users where email = '{}'".format(email))
+        rec = []
+        for c in self.cursor:
+            rec.append(c[0])
+        return rec
+      
+    def add_user(self, email, name, password):
+        self.cursor.execute("INSERT INTO users (email, name, password) VALUES ('{}','{}','{}')".format(email,name,password))
+        self.connection.commit()
+     
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "secret-key-goes-here"
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_NAME)
-
-db_auth.init_app(app)
+#app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://{}:{}@{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_NAME)
 
 main = Blueprint('main', __name__)
 
@@ -77,8 +86,24 @@ def logout():
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
-    # code to validate and add user to database goes here
-    return redirect(url_for('auth.login'))  
+    email = request.form.get('email')
+    name = request.form.get('name')
+    password = request.form.get('password')
+
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    user = db_conn.query_user(email)
+    
+    if user: # if a user is found, we want to redirect back to signup page so user can try again
+        return redirect(url_for('auth.signup'))
+
+    # add the new user to the database
+    db_conn.add_user(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+
+    return redirect(url_for('auth.login'))
   
 app.register_blueprint(auth)
 app.register_blueprint(main)
