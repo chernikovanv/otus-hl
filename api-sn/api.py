@@ -59,6 +59,14 @@ class DBManager:
             user = User(c[0],c[1],c[2])
             break
         return user
+    
+    def query_user_by_id(self, id):
+        self.cursor.execute("SELECT id, email, password FROM users where id = {}".format(id))
+        user = None
+        for c in self.cursor:
+            user = User(c[0],c[1],c[2])
+            break
+        return user
       
     def query_user_password(self, email):
         self.cursor.execute("SELECT password FROM users where email = '{}'".format(email))
@@ -80,6 +88,14 @@ app.config['SECRET_KEY'] = "secret-key-goes-here"
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(id):
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    return db_conn.query_user_by_id(id)
     
 main = Blueprint('main', __name__)
 
