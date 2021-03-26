@@ -133,7 +133,7 @@ def signup_post():
     password = request.form.get('password')
     interests = request.form.get('interests')
   
-    auth.logger.info(interests)
+    app.logger.info(interests)
     
     global db_conn
     if not db_conn: 
