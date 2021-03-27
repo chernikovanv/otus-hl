@@ -2,19 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  {{ name }} {{surname}}
-</h1>
-<h1 class="title">
-  {{ gender }}
-</h1>
-<h1 class="title">
-  {{ age }} years old
-</h1>
-<h1 class="title">
-  lives in {{ city }}
-</h1>
-<h1 class="title">
-  interested in {{ interests }}
-</h1>
+<a href="/profile">
+    {{name}} {{surname}}
+</a>
 {% endblock %}
