@@ -68,7 +68,7 @@ class DBManager:
             rec.append(c[0])
         return rec
      
-    def query_user(self, email):
+    def query_user_by_email(self, email):
         self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
         user = None
         for c in self.cursor:
@@ -114,6 +114,13 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    user = db_conn.query_user_by_email(current_user.email)
+    
     return render_template('profile.html',name=current_user.email)
 
 auth = Blueprint('auth', __name__)
@@ -150,7 +157,7 @@ def signup_post():
       db_conn = DBManager()
       db_conn.init_db()
     
-    user = db_conn.query_user(email)
+    user = db_conn.query_user_by_email(email)
     
     if user: # if a user is found, we want to redirect back to signup page so user can try again
         flash('Email address already exists')
@@ -180,7 +187,7 @@ def login_post():
       db_conn = DBManager()
       db_conn.init_db()
     
-    user = db_conn.query_user(email)
+    user = db_conn.query_user_by_email(email)
 
     # check if the user actually exists
     # take the user-supplied password, hash it, and compare it to the hashed password in the database
