@@ -29,4 +29,15 @@
 <h1 class="title">
   interested in {{ interests }}
 </h1>
+{% if friends %}
+<h1 class="title">
+  is friends with : 
+</h1>
+{% for friend in friends %}
+<a href="/profile/{{friend.id}}">
+    {{friend.name}} {{friend.surname}}
+</a>
+<br>
+{% endfor %}
+{% endif %}
 {% endblock %}
