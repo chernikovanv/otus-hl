@@ -121,7 +121,7 @@ def profile():
     
     user = db_conn.query_user_by_email(current_user.email)
     
-    return render_template('profile.html',name=current_user.email)
+    return render_template('profile.html',name=user.email, surname=user.surname)
 
 auth = Blueprint('auth', __name__)
 
