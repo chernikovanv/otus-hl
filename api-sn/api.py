@@ -157,7 +157,9 @@ def profile_by_id(id):
                            gender=user.gender,
                            age=user.age,
                            city=user.city,
-                           interests=', '.join(user.interests)
+                           interests=', '.join(user.interests),
+                           user_id_1=user.id,
+                           user_id_2=user.id
                           )
   
 @main.route('/all_profiles')
