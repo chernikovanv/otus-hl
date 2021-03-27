@@ -7,7 +7,7 @@
 </h1>
 {% if become_friends_action == True %}
 <form method="POST" action="/become_friends">
-  <input type="hidden" name="user_id" value="{{user_id}}">
+  <input type="hidden" name="user_id" value="{{id}}">
   <button class="button">become friends</button>
 </form>
 {% endif %}
