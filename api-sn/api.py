@@ -90,7 +90,7 @@ class DBManager:
         self.cursor.execute("SELECT id, name, surname FROM users where id in ({})".format(','.join(id)))
         users = []
         for c in self.cursor:
-            users.append(User(id=c[0],name=c[1],surname=c[2])
+            users.append(User(id=c[0],name=c[1],surname=c[2]))
         return users
      
     def query_user_by_email(self, email):
