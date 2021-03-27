@@ -114,7 +114,7 @@ class DBManager:
         return friends
       
     def become_friends(self,user_id_1,user_id_2):
-        self.cursor.execute("INSERT INTO friends (user_id_1,user_id_2)".format(user_id_1,user_id_2))
+        self.cursor.execute("INSERT INTO friends (user_id_1,user_id_2) VALUES ({},{})".format(user_id_1,user_id_2))
         self.connection.commit()
 
 app = Flask(__name__)
