@@ -84,6 +84,14 @@ class DBManager:
         for c in self.cursor:
             users.append(User(id=c[0], name=c[1], surname=c[2]))
         return users
+      
+    def query_users_by_ids(self, id):
+        if not id: return []
+        self.cursor.execute("SELECT id, name, surname FROM users where id in ({})".format(','.join(id)))
+        users = []
+        for c in self.cursor:
+            users.append(User(id=c[0],name=c[1],surname=c[2])
+        return users
      
     def query_user_by_email(self, email):
         self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
@@ -168,10 +176,12 @@ def profile_by_id(id):
     
     user = db_conn.query_user_by_id(id)
     
-    friends = db_conn.get_friends(current_user.id)
+    current_user_friends = db_conn.get_friends(current_user.id)
       
-    is_friend = user.id in friends
+    is_friend = user.id in current_user_friends
     is_current_user = current_user.id == user.id
+    
+    friends = db_conn.query_users_by_ids(db_conn.get_friends(user.id))
     
     return render_template('profile.html',
                            name=user.name,
@@ -182,7 +192,8 @@ def profile_by_id(id):
                            interests=', '.join(user.interests),
                            id=user.id,
                            is_friend=is_friend,
-                           is_current_user=is_current_user
+                           is_current_user=is_current_user,
+                           friends=friends
                           )
 
 @main.route('/become_friends', methods=['POST'])
