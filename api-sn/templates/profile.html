@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form method="PUT" action="/become_friends">
-  <button class="button">become friends</button>
-</form>
+
 <h1 class="title">
   {{ name }} {{surname}}
 </h1>
+<br>
+<form method="PUT" action="/become_friends?user_id_1={{user_id_1}},user_id_2={{user_id_2}}">
+  <button class="button">become friends</button>
+</form>
+<br>
 <h1 class="title">
   {{ gender }}
 </h1>
