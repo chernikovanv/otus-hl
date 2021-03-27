@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS friends (
 '''
 
 class User(UserMixin):
-    def __init__(self, id, email, password, name=None, surname=None, age=None, gender=None, city=None, interests=None):
+    def __init__(self, id, email=None, password=None, name=None, surname=None, age=None, gender=None, city=None, interests=None):
         self.id = id
         self.email = email
         self.password = password 
