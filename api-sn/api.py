@@ -169,11 +169,9 @@ def profile_by_id(id):
     user = db_conn.query_user_by_id(id)
     
     friends = db_conn.get_friends(current_user.id)
-    
-    become_friends_action = True
-    
-    if current_user.id == user.id or user.id in friends: 
-      become_friends_action = False
+      
+    is_friend = user.id in friends
+    is_current_user = current_user.id == user.id
     
     return render_template('profile.html',
                            name=user.name,
@@ -183,7 +181,8 @@ def profile_by_id(id):
                            city=user.city,
                            interests=', '.join(user.interests),
                            id=user.id,
-                           become_friends_action=become_friends_action
+                           is_friend=is_friend,
+                           is_current_user=is_current_user
                           )
 
 @main.route('/become_friends', methods=['POST'])
@@ -201,7 +200,7 @@ def become_friends():
     if user_id not in friends:
       db_conn.become_friends(current_user.id,user_id)
     
-    return
+    return redirect(request.headers.get("Referer"))
   
 @main.route('/all_profiles')
 @login_required
