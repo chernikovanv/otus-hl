@@ -40,6 +40,12 @@ CREATE TABLE IF NOT EXISTS friends (
 )
 '''
 
+GET_FRIENDS = '''
+select user_id_2 as id from friends where user_id_1 = {}
+union all 
+select user_id_1 as id from friends where user_id_2 = {}
+'''
+
 class User(UserMixin):
     def __init__(self, id, email=None, password=None, name=None, surname=None, age=None, gender=None, city=None, interests=None):
         self.id = id
@@ -98,7 +104,18 @@ class DBManager:
     def add_user(self, email, password, name, surname, age, gender, city, interests):
         SQL = "INSERT INTO users (email, password, name, surname, age, gender, city, interests) VALUES ('{}','{}','{}','{}',{},'{}','{}','{}')"
         self.cursor.execute(SQL.format(email, password, name, surname, age, gender, city, interests))
-        self.connection.commit()     
+        self.connection.commit()
+        
+    def get_friends(self,id):
+        self.cursor.execute(GET_FRIENDS.format(id))
+        friends = []
+        for c in self.cursor:
+            friends.append(c[0])
+        return friends
+      
+    def become_friends(self,user_id_1,user_id_2):
+        self.cursor.execute("INSERT INTO friends (user_id_1,user_id_2)".format(user_id_1,user_id_2))
+        self.connection.commit()
 
 app = Flask(__name__)
 
@@ -151,6 +168,13 @@ def profile_by_id(id):
     
     user = db_conn.query_user_by_id(id)
     
+    friends = db_conn.get_friends(current_user.id)
+    
+    become_friends_action = True
+    
+    if current_user.id == user.id or user.id in friends: 
+      become_friends_action = False
+    
     return render_template('profile.html',
                            name=user.name,
                            surname=user.surname,
@@ -158,8 +182,9 @@ def profile_by_id(id):
                            age=user.age,
                            city=user.city,
                            interests=', '.join(user.interests),
-                           user_id_1=user.id,
-                           user_id_2=user.id
+                           user_id_1=current_user.id,
+                           user_id_2=user.id,
+                           become_friends_action=become_friends_action
                           )
   
 @main.route('/all_profiles')
