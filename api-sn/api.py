@@ -73,11 +73,11 @@ class DBManager:
         self.connection.commit()
     
     def query_users(self):
-        self.cursor.execute('SELECT email FROM users')
-        rec = []
+        self.cursor.execute('SELECT id, name, surname FROM users')
+        users = []
         for c in self.cursor:
-            rec.append(c[0])
-        return rec
+            users.append(User(id=c[0], name=c[1], surname=c[2]))
+        return users
      
     def query_user_by_email(self, email):
         self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
@@ -148,11 +148,10 @@ def all_profiles():
       db_conn = DBManager()
       db_conn.init_db()
     
-    user = db_conn.query_user_by_email(current_user.email)
+    users = db_conn.query_users()
     
     return render_template('all_profiles.html',
-                           name=user.name,
-                           surname=user.surname
+                           users=users
                           )
 auth = Blueprint('auth', __name__)
 
