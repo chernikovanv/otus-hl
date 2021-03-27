@@ -32,10 +32,16 @@ CREATE TABLE IF NOT EXISTS users (
 '''
 
 class User(UserMixin):
-    def __init__(self, id, email, password):
+    def __init__(self, id, email, password, name=None, surname=None, age=None, gender=None, city=None, interests=None):
         self.id = id
         self.email = email
         self.password = password 
+        self.name = name 
+        self.surname = surname 
+        self.age = age 
+        self.gender = gender 
+        self.city = city 
+        self.interests = interests 
         
 class DBManager:
     def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD):
@@ -63,23 +69,24 @@ class DBManager:
         return rec
      
     def query_user(self, email):
-        self.cursor.execute("SELECT id, email, password FROM users where email = '{}'".format(email))
+        self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
         user = None
         for c in self.cursor:
-            user = User(c[0],c[1],c[2])
+            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8])
             break
         return user
     
     def query_user_by_id(self, id):
-        self.cursor.execute("SELECT id, email, password FROM users where id = {}".format(id))
+        self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id))
         user = None
         for c in self.cursor:
-            user = User(c[0],c[1],c[2])
+            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8])
             break
         return user
       
-    def add_user(self, email, name, password):
-        self.cursor.execute("INSERT INTO users (email, password) VALUES ('{}','{}')".format(email,password))
+    def add_user(self, email, password, name, surname, age, gender, city, interests):
+        SQL = "INSERT INTO users (email, password, name, surname, age, gender, city, interests) VALUES ('{}','{}','{}','{}',{},'{}','{}','{}')"
+        self.cursor.execute(SQL.format(email, password, name, surname, age, gender, city, interests))
         self.connection.commit()     
 
 app = Flask(__name__)
@@ -128,8 +135,12 @@ def logout():
 @auth.route('/signup', methods=['POST'])
 def signup_post():
     email = request.form.get('email')
-    name = request.form.get('name')
     password = request.form.get('password')
+    name = request.form.get('name')
+    surname = request.form.get('surname')
+    age = request.form.get('age')
+    gender = request.form.get('gender')
+    city = request.form.get('city')
     interests = request.form.getlist('interests')
   
     app.logger.info(interests)
@@ -146,7 +157,15 @@ def signup_post():
         return redirect(url_for('auth.signup'))
 
     # add the new user to the database
-    db_conn.add_user(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+    db_conn.add_user(email=email,
+                     password=generate_password_hash(password, method='sha256'),
+                     name=name,
+                     surname=surname,
+                     age=age,
+                     gender=gender,
+                     city=city,
+                     interests=",".join(interests)
+                    )
 
     return redirect(url_for('auth.login'))
  
