@@ -5,11 +5,16 @@
 <h1 class="title">
   {{ name }} {{surname}}
 </h1>
-{% if become_friends_action == True %}
+{% if is_friend == False and is_current_user == False %}
 <form method="POST" action="/become_friends">
   <input type="hidden" name="user_id" value="{{id}}">
   <button class="button">become friends</button>
 </form>
+{% endif %}
+{% if is_friend == True %}
+<h1 class="title">
+  is your friend
+</h1>
 {% endif %}
 <br>
 <h1 class="title">
