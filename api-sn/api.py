@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS users (
   name varchar(255) DEFAULT NULL,
   surname varchar(255) DEFAULT NULL,
   age int(8) unsigned DEFAULT NULL,
-  gender enum('m','f') DEFAULT NULL,
+  gender enum('male','female') DEFAULT NULL,
   city varchar(50) DEFAULT NULL,
-  interests set('Travel','Sports','Dancing','Fine Dining') DEFAULT NULL,
+  interests set('travel','sports','dancing') DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (email)
 )
@@ -56,7 +56,7 @@ class DBManager:
     def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
-        #self.cursor.execute(DROP_TABLE_USERS)
+        self.cursor.execute(DROP_TABLE_USERS)
         self.cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
