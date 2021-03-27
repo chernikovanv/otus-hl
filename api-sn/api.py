@@ -86,8 +86,11 @@ class DBManager:
         return users
       
     def query_users_by_ids(self, id):
+        app.logger.info(id)
         if not id: return []
-        self.cursor.execute("SELECT id, name, surname FROM users where id in ({})".format(','.join(id)))
+        SQL = "SELECT id, name, surname FROM users where id in ({})".format(','.join(id))
+        app.logger.info(SQL)
+        self.cursor.execute(SQL)
         users = []
         for c in self.cursor:
             users.append(User(id=c[0],name=c[1],surname=c[2]))
@@ -253,7 +256,7 @@ def signup_post():
     city = request.form.get('city')
     interests = request.form.getlist('interests')
   
-    app.logger.info(interests)
+    #app.logger.info(interests)
     
     global db_conn
     if not db_conn: 
