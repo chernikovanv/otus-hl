@@ -138,7 +138,7 @@ def profile():
                            gender=user.gender,
                            age=user.age,
                            city=user.city,
-                           interests=','.join(user.interests)
+                           interests=', '.join(user.interests)
                           )
 
 auth = Blueprint('auth', __name__)
