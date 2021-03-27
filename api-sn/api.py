@@ -31,6 +31,15 @@ CREATE TABLE IF NOT EXISTS users (
 )
 '''
 
+DROP_TABLE_FRIENDS = '''DROP TABLE IF EXISTS friends'''
+
+CREATE_TABLE_FRIENDS = '''
+CREATE TABLE IF NOT EXISTS friends (
+  user_id_1 int(10) unsigned NOT NULL,
+  user_id_2 int(10) unsigned NOT NULL
+)
+'''
+
 class User(UserMixin):
     def __init__(self, id, email, password, name=None, surname=None, age=None, gender=None, city=None, interests=None):
         self.id = id
@@ -56,8 +65,10 @@ class DBManager:
     def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         self.cursor.execute("USE {}".format(DB_NAME))
-        self.cursor.execute(DROP_TABLE_USERS)
+        #self.cursor.execute(DROP_TABLE_USERS)
         self.cursor.execute(CREATE_TABLE_USERS)
+        #self.cursor.execute(DROP_TABLE_FRIENDS)
+        self.cursor.execute(CREATE_TABLE_FRIENDS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
     
