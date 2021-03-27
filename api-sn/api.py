@@ -72,7 +72,7 @@ class DBManager:
         self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
         user = None
         for c in self.cursor:
-            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8])
+            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],list(c[8]))
             break
         return user
     
@@ -80,7 +80,7 @@ class DBManager:
         self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id))
         user = None
         for c in self.cursor:
-            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8])
+            user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],list(c[8]))
             break
         return user
       
@@ -127,7 +127,8 @@ def profile():
                            gender=user.gender,
                            age=user.age,
                            city=user.city,
-                           interests=user.interests)
+                           interests=','.join(user.interests)
+                          )
 
 auth = Blueprint('auth', __name__)
 
