@@ -107,7 +107,7 @@ class DBManager:
         self.connection.commit()
         
     def get_friends(self,id):
-        self.cursor.execute(GET_FRIENDS.format(id))
+        self.cursor.execute(GET_FRIENDS.format(id,id))
         friends = []
         for c in self.cursor:
             friends.append(c[0])
