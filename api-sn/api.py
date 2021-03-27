@@ -182,10 +182,26 @@ def profile_by_id(id):
                            age=user.age,
                            city=user.city,
                            interests=', '.join(user.interests),
-                           user_id_1=current_user.id,
-                           user_id_2=user.id,
+                           id=user.id,
                            become_friends_action=become_friends_action
                           )
+
+@main.route('/become_friends', methods=['POST'])
+@login_required
+def become_friends():
+    user_id = request.form.get('user_id')
+    
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    friends = db_conn.get_friends(current_user.id)
+    
+    if user_id not in friends:
+      db_conn.become_friends(current_user.id,user_id)
+    
+    return
   
 @main.route('/all_profiles')
 @login_required
