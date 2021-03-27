@@ -140,6 +140,26 @@ def profile():
                            city=user.city,
                            interests=', '.join(user.interests)
                           )
+  
+@main.route('/profile/<id>')
+@login_required
+def profile(id):
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    user = db_conn.query_user_by_id(id)
+    
+    return render_template('profile.html',
+                           name=user.name,
+                           surname=user.surname,
+                           gender=user.gender,
+                           age=user.age,
+                           city=user.city,
+                           interests=', '.join(user.interests)
+                          )
+  
 @main.route('/all_profiles')
 @login_required
 def all_profiles():
