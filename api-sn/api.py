@@ -140,7 +140,20 @@ def profile():
                            city=user.city,
                            interests=', '.join(user.interests)
                           )
-
+@main.route('/all_profiles')
+@login_required
+def all_profiles():
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+    
+    user = db_conn.query_user_by_email(current_user.email)
+    
+    return render_template('all_profiles.html',
+                           name=user.name,
+                           surname=user.surname
+                          )
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
