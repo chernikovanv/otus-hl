@@ -2,7 +2,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="/profile">
-    {{name}} {{surname}}
-</a>
+{% for user in users %}
+    <a href="/profile/{{user.id}}">
+        {{user.name}} {{user.surname}}
+    </a>
+{% endfor %}
+
 {% endblock %}
