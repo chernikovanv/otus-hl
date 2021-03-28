@@ -60,10 +60,22 @@ class User(UserMixin):
         
 class DBManager:
     def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD):
+        self.host = host
+        self.user = user
+        self.password = password
         self.connection = mysql.connector.connect(
-            user=user, 
-            password=password,
-            host=host, # name of the mysql service as set in the docker-compose file
+            user=self.user, 
+            password=self.password,
+            host=self.host,
+            auth_plugin='mysql_native_password'
+        )
+        self.cursor = self.connection.cursor()
+        
+    def reconnect(self):
+        self.connection = mysql.connector.connect(
+            user=self.user, 
+            password=self.password,
+            host=self.host,
             auth_plugin='mysql_native_password'
         )
         self.cursor = self.connection.cursor()
@@ -77,6 +89,18 @@ class DBManager:
         self.cursor.execute(CREATE_TABLE_FRIENDS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
+    
+    def query(self, SQL):
+      try:
+        self.cursor.execute(SQL)
+      #except mysql.connector.errors.DatabaseError as err:
+      except mysql.connector.errors.ProgrammingError as err:
+          app.logger.error(err)
+          app.logger.info('db reconnection')
+          self.reconnect()
+          self.cursor.execute(SQL)
+      res = self.cursor.fetchall()
+      return res
     
     def query_users(self):
         self.cursor.execute('SELECT id, name, surname FROM users')
@@ -103,12 +127,10 @@ class DBManager:
         return user
     
     def query_user_by_id(self, id):
-        try:
-          self.cursor.execute("SELECT idd, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id))
-        except mysql.connector.errors.ProgrammingError as err:
-          app.logger.info('ERRRRROOOOOORRRR')
+        SQL = "SELECT idd, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id)
+        res = self.query(SQL)
         user = None
-        for c in self.cursor:
+        for c in res:
             user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],list(c[8]))
             break
         return user
