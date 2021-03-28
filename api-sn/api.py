@@ -141,7 +141,7 @@ class DBManager:
         return user
     
     def query_user_by_id(self, id):
-        SQL = "SELECT idd, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id)
+        SQL = "SELECT id, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id)
         res = self.query(SQL)
         user = None
         for c in res:
