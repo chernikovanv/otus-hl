@@ -103,7 +103,7 @@ class DBManager:
         return user
     
     def query_user_by_id(self, id):
-        self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id))
+        self.cursor.execute("SELECT idd, email, password, name, surname, age, gender, city, interests FROM users where id = {}".format(id))
         user = None
         for c in self.cursor:
             user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],list(c[8]))
