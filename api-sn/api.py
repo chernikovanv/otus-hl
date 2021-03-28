@@ -96,8 +96,7 @@ class DBManager:
     def query(self, SQL):
       try:
         self.cursor.execute(SQL)
-      #except mysql.connector.errors.DatabaseError as err:
-      except mysql.connector.errors.ProgrammingError as err:
+      except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
           app.logger.info('db reconnection')
           self.reconnect()
@@ -105,26 +104,38 @@ class DBManager:
       res = self.cursor.fetchall()
       return res
     
+    def update(self, SQL):
+      try:
+        self.cursor.execute(SQL)
+      except mysql.connector.errors.DatabaseError as err:
+          app.logger.error(err)
+          app.logger.info('db reconnection')
+          self.reconnect()
+          self.cursor.execute(SQL)
+      self.connection.commit()
+    
     def query_users(self):
-        self.cursor.execute('SELECT id, name, surname FROM users')
+        SQL = 'SELECT id, name, surname FROM users'
+        res = self.query(SQL)
         users = []
-        for c in self.cursor:
+        for c in res:
             users.append(User(id=c[0], name=c[1], surname=c[2]))
         return users
       
     def query_users_by_ids(self, ids):
         if not ids: return []
         SQL = "SELECT id, name, surname FROM users where id in ({})".format(','.join(str(id) for id in ids))
-        self.cursor.execute(SQL)
+        res = self.query(SQL)
         users = []
-        for c in self.cursor:
+        for c in res:
             users.append(User(id=c[0],name=c[1],surname=c[2]))
         return users
      
     def query_user_by_email(self, email):
-        self.cursor.execute("SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email))
+        SQL = "SELECT id, email, password, name, surname, age, gender, city, interests FROM users where email = '{}'".format(email)
+        res = self.query(SQL)
         user = None
-        for c in self.cursor:
+        for c in res:
             user = User(c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],list(c[8]))
             break
         return user
@@ -140,19 +151,19 @@ class DBManager:
       
     def add_user(self, email, password, name, surname, age, gender, city, interests):
         SQL = "INSERT INTO users (email, password, name, surname, age, gender, city, interests) VALUES ('{}','{}','{}','{}',{},'{}','{}','{}')"
-        self.cursor.execute(SQL.format(email, password, name, surname, age, gender, city, interests))
-        self.connection.commit()
+        SQL = SQL.format(email, password, name, surname, age, gender, city, interests)
+        self.update(SQL)
         
     def get_friends(self,id):
-        self.cursor.execute(GET_FRIENDS.format(id,id))
+        res = self.query(GET_FRIENDS.format(id,id))
         friends = []
-        for c in self.cursor:
+        for c in res:
             friends.append(c[0])
         return friends
       
     def become_friends(self,user_id_1,user_id_2):
-        self.cursor.execute("INSERT INTO friends (user_id_1,user_id_2) VALUES ({},{})".format(user_id_1,user_id_2))
-        self.connection.commit()
+        SQL = "INSERT INTO friends (user_id_1,user_id_2) VALUES ({},{})".format(user_id_1,user_id_2)
+        self.update(SQL)
 
 app = Flask(__name__)
 
