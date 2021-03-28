@@ -59,14 +59,16 @@ class User(UserMixin):
         self.interests = interests 
         
 class DBManager:
-    def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD):
+    def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME):
         self.host = host
         self.user = user
         self.password = password
+        self.database=database
         self.connection = mysql.connector.connect(
             user=self.user, 
             password=self.password,
             host=self.host,
+            #database=self.database, 
             auth_plugin='mysql_native_password'
         )
         self.cursor = self.connection.cursor()
@@ -76,6 +78,7 @@ class DBManager:
             user=self.user, 
             password=self.password,
             host=self.host,
+            database=self.database,
             auth_plugin='mysql_native_password'
         )
         self.cursor = self.connection.cursor()
