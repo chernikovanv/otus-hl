@@ -197,13 +197,16 @@ def profile():
     
     user = db_conn.query_user_by_email(current_user.email)
     
+    friends = db_conn.query_users_by_ids(db_conn.get_friends(user.id))
+    
     return render_template('profile.html',
                            name=user.name,
                            surname=user.surname,
                            gender=user.gender,
                            age=user.age,
                            city=user.city,
-                           interests=', '.join(user.interests)
+                           interests=', '.join(user.interests),
+                           friends=friends
                           )
   
 @main.route('/profile/<id>')
