@@ -300,24 +300,28 @@ def signup_post():
       db_conn = DBManager()
       db_conn.init_db()
     
-    user = db_conn.query_user_by_email(email)
-    
-    if user: # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
-        return redirect(url_for('auth.signup'))
+    try:
+      user = db_conn.query_user_by_email(email)
 
-    # add the new user to the database
-    db_conn.add_user(email=email,
-                     password=generate_password_hash(password, method='sha256'),
-                     name=name,
-                     surname=surname,
-                     age=age,
-                     gender=gender,
-                     city=city,
-                     interests=",".join(interests)
-                    )
+      if user: # if a user is found, we want to redirect back to signup page so user can try again
+          flash('Email address already exists')
+          return redirect(url_for('auth.signup'))
 
-    return redirect(url_for('auth.login'))
+      # add the new user to the database
+      db_conn.add_user(email=email,
+                       password=generate_password_hash(password, method='sha256'),
+                       name=name,
+                       surname=surname,
+                       age=age,
+                       gender=gender,
+                       city=city,
+                       interests=",".join(interests)
+                      )
+
+      return redirect(url_for('auth.login'))
+    except:
+      flash('Some of your data is wrong')
+      return redirect(url_for('auth.signup'))
  
 @auth.route('/login', methods=['POST'])
 def login_post():
