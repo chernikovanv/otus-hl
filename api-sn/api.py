@@ -304,7 +304,7 @@ def signup_post():
       user = db_conn.query_user_by_email(email)
 
       if user: # if a user is found, we want to redirect back to signup page so user can try again
-          flash('Email address already exists. Go to <a href="{}">login page</a>.'.format(url_for('auth.login')))
+          flash('Email address already exists.')
           return redirect(url_for('auth.signup'))
 
       # add the new user to the database
@@ -320,7 +320,7 @@ def signup_post():
 
       return redirect(url_for('auth.login'))
     except:
-      flash('Some of your data is wrong') 
+      flash('Some of your data is wrong.') 
       return redirect(url_for('auth.signup'))
  
 @auth.route('/login', methods=['POST'])
