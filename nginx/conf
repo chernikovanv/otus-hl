@@ -10,6 +10,6 @@ server {
     listen       88;
     server_name  localhost;
     location / {
-        proxy_pass http://api-service:8888;
+        proxy_pass http://jupyter:8888;
     }
 }
