@@ -2,8 +2,6 @@ version: '3'
 services:
     jupyter:
         build: ./jupyter/
-        volumes: 
-            - ./jupyter/:/usr/src/app/
         ports: 
             - 88:88      
     api-service:
