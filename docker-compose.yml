@@ -5,7 +5,7 @@ services:
         volumes: 
             - ./jupyter/:/usr/src/app/
         ports: 
-            - 8888:8888      
+            - 88:88      
     api-service:
         build: ./api-sn/
         volumes: 
@@ -29,6 +29,5 @@ services:
         build: ./nginx/
         ports:
           - 80:80
-          - 88:88
 volumes:
   db-data:
