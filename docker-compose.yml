@@ -5,7 +5,10 @@ services:
         volumes:
             - ./jupyter/scripts/:/usr/src/app/scripts/
         ports: 
-            - 88:88      
+            - 88:88
+        environment: 
+            MYSQL_DATABASE: social_net
+            MYSQL_ROOT_PASSWORD : root
     api-service:
         build: ./api-sn/
         volumes: 
