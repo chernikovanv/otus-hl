@@ -84,14 +84,16 @@ class DBManager:
         #self.cursor = self.connection.cursor()
     
     def init_db(self):
-        self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
-        self.cursor.execute("USE {}".format(DB_NAME))
+        cursor = self.connection.cursor()
+        cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
+        cursor.execute("USE {}".format(DB_NAME))
         #self.cursor.execute(DROP_TABLE_USERS)
-        self.cursor.execute(CREATE_TABLE_USERS)
+        cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.execute(DROP_TABLE_FRIENDS)
-        self.cursor.execute(CREATE_TABLE_FRIENDS)
+        cursor.execute(CREATE_TABLE_FRIENDS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
         self.connection.commit()
+        cursor.close()
     
     def query(self, SQL):
       try:
@@ -104,11 +106,12 @@ class DBManager:
           cursor = self.connection.cursor(buffered=True)
           cursor.execute(SQL)
       res = cursor.fetchall()
+      cursor.close()
       return res
     
     def update(self, SQL):
       try:
-        cursor = self.connection.cursor(buffered=True)
+        cursor = self.connection.cursor()
         cursor.execute(SQL)
       except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
@@ -117,6 +120,7 @@ class DBManager:
           cursor = self.connection.cursor(buffered=True)
           cursor.execute(SQL)
       self.connection.commit()
+      cursor.close()
     
     def query_users(self):
         SQL = 'SELECT id, name, surname FROM users'
