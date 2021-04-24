@@ -138,6 +138,11 @@ class DBManager:
         SQL = SQL.format(email, password, name, surname, age, gender, city, interests)
         self.update(SQL)
         
+    def add_user_short(self, name, surname):
+        SQL = "INSERT INTO users (name, surname) VALUES ('{}','{}')"
+        SQL = SQL.format(name, surname)
+        self.update(SQL)
+        
     def get_friends(self,id):
         res = self.query(GET_FRIENDS.format(id,id))
         friends = []
