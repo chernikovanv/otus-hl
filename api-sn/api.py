@@ -123,7 +123,7 @@ class DBManager:
         return users
       
     def query_users_by_pref(self, name_pref, surname_pref):
-        SQL = "SELECT id, name, surname FROM users where name like '{}%' and surname like '{}%'".format(name_pref, surname_pref)
+        SQL = "SELECT id, name, surname FROM users where name like '{}%' and surname like '{}%' order by id asc".format(name_pref, surname_pref)
         res = self.query(SQL)
         users = []
         for c in res:
