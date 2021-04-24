@@ -122,6 +122,14 @@ class DBManager:
             users.append(User(id=c[0], name=c[1], surname=c[2]))
         return users
       
+    def query_users_by_pref(self, name_pref, surname_pref):
+        SQL = "SELECT id, name, surname FROM users where name like '{}%' and surname like '{}%'".format(name_pref, surname_pref)
+        res = self.query(SQL)
+        users = []
+        for c in res:
+            users.append(User(id=c[0], name=c[1], surname=c[2]))
+        return users
+      
     def query_users_by_ids(self, ids):
         if not ids: return []
         SQL = "SELECT id, name, surname FROM users where id in ({})".format(','.join(str(id) for id in ids))
@@ -186,6 +194,19 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     return render_template('index.html')
+  
+@main.route('/profiles_by_pref')
+def profiles_by_pref():
+    global db_conn
+    if not db_conn: 
+      db_conn = DBManager()
+      db_conn.init_db()
+        
+    users = db_conn.query_users_by_pref('Br','Al')
+    
+    return render_template('profiles.html',
+                           users=users
+                          )
 
 @main.route('/profile')
 @login_required
