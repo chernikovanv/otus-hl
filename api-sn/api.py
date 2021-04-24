@@ -71,7 +71,7 @@ class DBManager:
             #database=self.database, 
             auth_plugin='mysql_native_password'
         )
-        self.cursor = self.connection.cursor()
+        #self.cursor = self.connection.cursor()
         
     def reconnect(self):
         self.connection = mysql.connector.connect(
@@ -81,7 +81,7 @@ class DBManager:
             database=self.database,
             auth_plugin='mysql_native_password'
         )
-        self.cursor = self.connection.cursor()
+        #self.cursor = self.connection.cursor()
     
     def init_db(self):
         self.cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
@@ -95,23 +95,27 @@ class DBManager:
     
     def query(self, SQL):
       try:
-        self.cursor.execute(SQL)
+        cursor = self.connection.cursor(buffered=True)
+        cursor.execute(SQL)
       except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
           app.logger.info('db reconnection')
           self.reconnect()
-          self.cursor.execute(SQL)
-      res = self.cursor.fetchall()
+          cursor = self.connection.cursor(buffered=True)
+          cursor.execute(SQL)
+      res = cursor.fetchall()
       return res
     
     def update(self, SQL):
       try:
-        self.cursor.execute(SQL)
+        cursor = self.connection.cursor(buffered=True)
+        cursor.execute(SQL)
       except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
           app.logger.info('db reconnection')
           self.reconnect()
-          self.cursor.execute(SQL)
+          cursor = self.connection.cursor(buffered=True)
+          cursor.execute(SQL)
       self.connection.commit()
     
     def query_users(self):
