@@ -88,12 +88,12 @@ class DBManager:
             user=self.user, 
             password=self.password,
             host=self.host,
-            #database=self.database, 
+            database=self.database, 
             auth_plugin='mysql_native_password'
         )
         cursor = connection.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
-        cursor.execute("USE {}".format(DB_NAME))
+        #cursor.execute("USE {}".format(DB_NAME))
         #self.cursor.execute(DROP_TABLE_USERS)
         cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.execute(DROP_TABLE_FRIENDS)
@@ -104,13 +104,13 @@ class DBManager:
         connection.close()
     
     def query(self, SQL):
-      res = None
+      res = []
       try:
         connection = mysql.connector.connect(
             user=self.user, 
             password=self.password,
             host=self.host,
-            #database=self.database, 
+            database=self.database, 
             auth_plugin='mysql_native_password'
         )
         cursor = connection.cursor()
@@ -132,7 +132,7 @@ class DBManager:
             user=self.user, 
             password=self.password,
             host=self.host,
-            #database=self.database, 
+            database=self.database, 
             auth_plugin='mysql_native_password'
         )
         cursor = connection.cursor()
