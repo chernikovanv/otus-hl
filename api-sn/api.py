@@ -204,7 +204,7 @@ def profiles_by_pref():
         
     users = db_conn.query_users_by_pref('Br','Al')
     
-    return render_template('profiles.html',
+    return render_template('all_profiles.html',
                            users=users
                           )
 
