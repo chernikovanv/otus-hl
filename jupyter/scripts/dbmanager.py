@@ -41,6 +41,18 @@ select user_id_2 as id from friends where user_id_1 = {}
 union all 
 select user_id_1 as id from friends where user_id_2 = {}
 '''
+
+class User():
+    def __init__(self, id, email=None, password=None, name=None, surname=None, age=None, gender=None, city=None, interests=None):
+        self.id = id
+        self.email = email
+        self.password = password 
+        self.name = name 
+        self.surname = surname 
+        self.age = age 
+        self.gender = gender 
+        self.city = city 
+        self.interests = interests 
         
 class DBManager:
     def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME):
@@ -100,6 +112,14 @@ class DBManager:
     
     def query_users(self):
         SQL = 'SELECT id, name, surname FROM users'
+        res = self.query(SQL)
+        users = []
+        for c in res:
+            users.append(User(id=c[0], name=c[1], surname=c[2]))
+        return users
+    
+    def query_users_by_pref(self, name_pref, surname_pref):
+        SQL = "SELECT id, name, surname FROM users where name like '{}%' and surname like '{}%'".format(name_pref, surname_pref)
         res = self.query(SQL)
         users = []
         for c in res:
