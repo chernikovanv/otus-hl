@@ -135,7 +135,7 @@ class DBManager:
             #database=self.database, 
             auth_plugin='mysql_native_password'
         )
-        cursor = self.connection.cursor()
+        cursor = connection.cursor()
         cursor.execute(SQL)
         connection.commit()
         cursor.close()
