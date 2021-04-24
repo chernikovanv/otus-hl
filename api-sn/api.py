@@ -64,13 +64,13 @@ class DBManager:
         self.user = user
         self.password = password
         self.database=database
-        self.connection = mysql.connector.connect(
-            user=self.user, 
-            password=self.password,
-            host=self.host,
-            #database=self.database, 
-            auth_plugin='mysql_native_password'
-        )
+        #self.connection = mysql.connector.connect(
+        #    user=self.user, 
+        #    password=self.password,
+        #    host=self.host,
+        #    #database=self.database, 
+        #    auth_plugin='mysql_native_password'
+        #)
         #self.cursor = self.connection.cursor()
         
     def reconnect(self):
@@ -84,7 +84,14 @@ class DBManager:
         #self.cursor = self.connection.cursor()
     
     def init_db(self):
-        cursor = self.connection.cursor()
+        connection = mysql.connector.connect(
+            user=self.user, 
+            password=self.password,
+            host=self.host,
+            #database=self.database, 
+            auth_plugin='mysql_native_password'
+        )
+        cursor = connection.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
         cursor.execute("USE {}".format(DB_NAME))
         #self.cursor.execute(DROP_TABLE_USERS)
@@ -92,35 +99,53 @@ class DBManager:
         #self.cursor.execute(DROP_TABLE_FRIENDS)
         cursor.execute(CREATE_TABLE_FRIENDS)
         #self.cursor.executemany('INSERT INTO users (id, email) VALUES (%s, %s);', [(i, 'user_%d@mail.ru'% i) for i in range (1,5)])
-        self.connection.commit()
+        connection.commit()
         cursor.close()
+        connection.close()
     
     def query(self, SQL):
+      res = None
       try:
-        cursor = self.connection.cursor(buffered=True)
+        connection = mysql.connector.connect(
+            user=self.user, 
+            password=self.password,
+            host=self.host,
+            #database=self.database, 
+            auth_plugin='mysql_native_password'
+        )
+        cursor = connection.cursor()
         cursor.execute(SQL)
+        res = cursor.fetchall()
+        cursor.close()
+        connection.close()
       except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
-          app.logger.info('db reconnection')
-          self.reconnect()
-          cursor = self.connection.cursor(buffered=True)
-          cursor.execute(SQL)
-      res = cursor.fetchall()
-      cursor.close()
+          #app.logger.info('db reconnection')
+          #self.reconnect()
+          #cursor = self.connection.cursor(buffered=True)
+          #cursor.execute(SQL)
       return res
     
     def update(self, SQL):
       try:
+        connection = mysql.connector.connect(
+            user=self.user, 
+            password=self.password,
+            host=self.host,
+            #database=self.database, 
+            auth_plugin='mysql_native_password'
+        )
         cursor = self.connection.cursor()
         cursor.execute(SQL)
+        connection.commit()
+        cursor.close()
+        connection.close()
       except mysql.connector.errors.DatabaseError as err:
           app.logger.error(err)
-          app.logger.info('db reconnection')
-          self.reconnect()
-          cursor = self.connection.cursor(buffered=True)
-          cursor.execute(SQL)
-      self.connection.commit()
-      cursor.close()
+          #app.logger.info('db reconnection')
+          #self.reconnect()
+          #cursor = self.connection.cursor(buffered=True)
+          #cursor.execute(SQL)
     
     def query_users(self):
         SQL = 'SELECT id, name, surname FROM users'
