@@ -1,24 +1,35 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: api-sn
   labels:
-    name: api-sn
+    name: sn-web
+  name: sn-web
 spec:
-  containers:
-  - name: api-sn
-    image: gcr.io/analog-ground-246307/api-sn
-    env:
-    - name: MYSQL_HOST
-      value: "mysql-0.mysql"
-    - name: MYSQL_HOST_READ
-      value: "mysql-read"
-    - name: MYSQL_DATABASE
-      value: "social_net"
-    - name: MYSQL_USER
-      value: "root"
-    - name: MYSQL_PASSWORD
-      value: ""
+  replicas: 1
+  selector:
+    matchLabels:
+      name: sn-web
+  template:
+    metadata:
+      labels:
+        name: sn-web
+    spec:
+      containers:
+      - image: gcr.io/analog-ground-246307/api-sn
+        name: api-sn
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-0.mysql"
+        - name: MYSQL_HOST_READ
+          value: "mysql-read"
+        - name: MYSQL_DATABASE
+          value: "social_net"
+        - name: MYSQL_USER
+          value: "root"
+        - name: MYSQL_PASSWORD
+          value: ""
      
     
       
