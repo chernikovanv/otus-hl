@@ -8,10 +8,11 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
-DB_HOST = "db"
+DB_HOST = os.getenv('MYSQL_HOST')
+DB_HOST_READ = os.getenv('MYSQL_HOST_READ')
 DB_NAME = os.getenv('MYSQL_DATABASE')
-DB_USER = "root"
-DB_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD')
+DB_USER = os.getenv('MYSQL_USER')
+DB_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
 DROP_TABLE_USERS = '''DROP TABLE IF EXISTS users'''
 
