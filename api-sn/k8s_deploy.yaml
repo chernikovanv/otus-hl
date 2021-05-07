@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-sn
+spec:
+  containers:
+  - name: api-sn
+    image: gcr.io/analog-ground-246307/api-sn
+    env:
+    - name: MYSQL_HOST
+      value: "mysql-0.mysql"
+    - name: MYSQL_HOST_READ
+      value: "mysql-read"
+    - name: MYSQL_DATABASE
+      value: "social_net"
+    - name: MYSQL_USER
+      value: "root"
+    - name: MYSQL_PASSWORD
+      value: ""
+     
+    
+      
