@@ -265,7 +265,7 @@ def profile():
                           )
   
 @main.route('/profile/<id>')
-@login_required
+#@login_required
 def profile_by_id(id):
     global db_conn
     if not db_conn: 
