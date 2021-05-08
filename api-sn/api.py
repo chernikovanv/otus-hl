@@ -94,7 +94,7 @@ class DBManager:
         )
         cursor = connection.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS {}".format(DB_NAME))
-        #cursor.execute("USE {}".format(DB_NAME))
+        cursor.execute("USE {}".format(DB_NAME))
         #self.cursor.execute(DROP_TABLE_USERS)
         cursor.execute(CREATE_TABLE_USERS)
         #self.cursor.execute(DROP_TABLE_FRIENDS)
