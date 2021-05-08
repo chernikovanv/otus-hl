@@ -15,7 +15,7 @@ spec:
         name: jupyter
     spec:
       containers:
-      - image: gcr.io/analog-ground-246307/jupyter
+      - image: gcr.io/analog-ground-246307/jupyter:0.1
         name: jupyter
         ports:
         - containerPort: 88
