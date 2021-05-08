@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: jupyter
+  name: jupyter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jupyter
+  template:
+    metadata:
+      labels:
+        name: jupyter
+    spec:
+      containers:
+      - image: gcr.io/analog-ground-246307/jupyter
+        name: jupyter
+        ports:
+        - containerPort: 88
