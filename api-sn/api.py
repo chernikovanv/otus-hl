@@ -89,7 +89,7 @@ class DBManager:
             user=self.user, 
             password=self.password,
             host=self.host,
-            database=self.database, 
+            #database=self.database, 
             auth_plugin='mysql_native_password'
         )
         cursor = connection.cursor()
