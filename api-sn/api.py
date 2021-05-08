@@ -60,8 +60,9 @@ class User(UserMixin):
         self.interests = interests 
         
 class DBManager:
-    def __init__(self, host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME):
+    def __init__(self, host=DB_HOST, host_read=DB_HOST_READ, user=DB_USER, password=DB_PASSWORD, database=DB_NAME):
         self.host = host
+        self.host_read = host_read
         self.user = user
         self.password = password
         self.database=database
@@ -110,7 +111,7 @@ class DBManager:
         connection = mysql.connector.connect(
             user=self.user, 
             password=self.password,
-            host=self.host,
+            host=self.host_read,
             database=self.database, 
             auth_plugin='mysql_native_password'
         )
@@ -265,7 +266,7 @@ def profile():
                           )
   
 @main.route('/profile/<id>')
-#@login_required
+@login_required
 def profile_by_id(id):
     global db_conn
     if not db_conn: 
