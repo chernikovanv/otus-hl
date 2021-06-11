@@ -79,7 +79,7 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 1Gi
+            memory: 500Mi
         livenessProbe:
           exec:
             command: ["mysqladmin", "ping"]
@@ -163,4 +163,4 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 2Gi
+          storage: 500Mi
